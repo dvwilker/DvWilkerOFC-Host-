@@ -1,0 +1,27 @@
+[
+  {
+    "id": "b5e98d1e-50c2-4364-a6d0-6af92cbf71d1",
+    "username": "DvWilkerOFC",
+    "email": "developer.wilker.ofc@gmail.com",
+    "password": "$2a$10$eyxDsB.B9DOum0kiL6BwNuyBF9/67qlojhDDnvexLwBQmT7IQnrN.",
+    "verified": true,
+    "verificationToken": null,
+    "plan": "premium",
+    "coins": 999999,
+    "isAdmin": true,
+    "servers": [
+      {
+        "id": "9882776d-968e-465e-928d-7dd927e13ab8",
+        "name": "Gohan-Beast",
+        "repoUrl": "https://github.com/dvwilker/Gohan-Beast.git",
+        "mainFile": "index.js",
+        "path": "/home/container/servers/b5e98d1e-50c2-4364-a6d0-6af92cbf71d1/9882776d-968e-465e-928d-7dd927e13ab8",
+        "createdAt": "2026-06-27T01:31:56.769Z",
+        "status": "offline"
+      }
+    ],
+    "createdAt": "2026-06-22T15:05:15.347Z",
+    "resetToken": null,
+    "resetExpires": null
+  }
+]
