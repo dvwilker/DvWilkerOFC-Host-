@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soporte - DvWilkerOFC HOST</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #b0b0b0;
+            margin-bottom: 40px;
+        }
+
+        .contact-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            font-size: 1.3em;
+        }
+
+        .contact-item .emoji {
+            font-size: 1.5em;
+        }
+
+        .phone {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+            font-size: 1.4em;
+        }
+
+        .info-text {
+            color: #e0e0e0;
+            line-height: 1.8;
+            margin: 25px 0;
+            font-size: 1.05em;
+        }
+
+        .whatsapp-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            padding: 18px 45px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+            margin-top: 20px;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.6);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #0099cc;
+        }
+
+        .divider {
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            margin: 30px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📞</div>
+        <h1>Soporte Técnico</h1>
+        <p class="subtitle">Estamos aquí para ayudarte 24/7</p>
+
+        <div class="contact-box">
+            <div class="contact-item">
+                <span class="emoji">💬</span>
+                <span>Contáctanos por WhatsApp</span>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="contact-item">
+                <span class="emoji">📱</span>
+                <span class="phone">+58 412 587 7491</span>
+            </div>
+        </div>
+
+        <p class="info-text">
+            <strong>🕐 Horario:</strong> 24 horas, 7 días a la semana<br>
+            <strong>⚡ Tiempo de respuesta:</strong> Menos de 1 hora<br>
+            <strong>💡 Ayuda con:</strong> Configuración, problemas técnicos, compras de planes
+        </p>
+
+        <a href="https://wa.me/584125877491?text=Hola,%20necesito%20soporte%20técnico" 
+           class="whatsapp-btn" 
+           target="_blank">
+            💬 Abrir WhatsApp
+        </a>
+
+        <div style="margin-top: 30px;">
+            <a href="/dashboard" class="back-btn">← Volver al Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DvWilkerOFC HOST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles/hiden.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-cloud"></i>
+                <span>DvWilkerOFC</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="/dashboard" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/shop" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Tienda</span>
+            </a>
+            <a href="/soporte" class="nav-item">
+                <i class="fas fa-life-ring"></i>
+                <span>Soporte</span>
+            </a>
+            <a href="/admin" class="nav-item" id="adminNav" style="display: none;">
+                <i class="fas fa-crown"></i>
+                <span>Admin Panel</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <div class="user-name" id="sidebarUsername">Usuario</div>
+                    <div class="user-plan" id="sidebarPlan">Free Plan</div>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="header-actions">
+                <div class="coins-badge">
+                    <i class="fas fa-coins"></i>
+                    <span id="headerCoins">0</span>
+                </div>
+                <div class="user-dropdown">
+                    <button class="user-btn" onclick="toggleUserMenu()">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="headerUsername">Usuario</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="userMenu">
+                        <a href="/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                        <a href="/shop"><i class="fas fa-shopping-cart"></i> Tienda</a>
+                        <a href="/soporte"><i class="fas fa-life-ring"></i> Soporte</a>
+                        <div class="dropdown-divider"></div>
+                        <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">Servidores</div>
+                        <div class="stat-value" id="totalServers">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">En Línea</div>
+                        <div class="stat-value" id="onlineServers">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-memory"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">RAM Disponible</div>
+                        <div class="stat-value" id="availableRam">0 MB</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">Coins</div>
+                        <div class="stat-value" id="totalCoins">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Servers Section -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>Mis Servidores</h2>
+                    <button class="btn btn-primary" onclick="openCreateModal()">
+                        <i class="fas fa-plus"></i> Crear Servidor
+                    </button>
+                </div>
+
+                <div class="servers-list" id="serversList">
+                    <!-- Servers will be loaded here -->
+                    <div class="empty-state">
+                        <i class="fas fa-server"></i>
+                        <h3>No tienes servidores</h3>
+                        <p>Crea tu primer servidor para comenzar</p>
+                        <button class="btn btn-primary" onclick="openCreateModal()">
+                            <i class="fas fa-plus"></i> Crear Servidor
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Crear Servidor -->
+    <div class="modal" id="createModal">
+        <div class="modal-backdrop" onclick="closeCreateModal()"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2><i class="fab fa-github"></i> Crear Servidor</h2>
+                <button class="modal-close" onclick="closeCreateModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createForm">
+                    <div class="form-group">
+                        <label>Nombre del servidor</label>
+                        <input type="text" id="serverName" required placeholder="Mi Bot WhatsApp">
+                    </div>
+                    <div class="form-group">
+                        <label>URL del repositorio GitHub</label>
+                        <input type="url" id="repoUrl" required placeholder="https://github.com/usuario/repo">
+                        <small>El repositorio debe ser público o usa un token para privados</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Archivo principal</label>
+                        <input type="text" id="mainFile" value="index.js" placeholder="index.js">
+                        <small>El archivo que se ejecutará con Node.js</small>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeCreateModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="createBtn">
+                            <i class="fas fa-clone"></i> Clonar y Crear
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/dashboard-hiden.js"></script>
+</body>
+</html>

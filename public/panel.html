@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - DvWilkerOFC HOST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            min-height: 100vh;
+            color: #fff;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(0,0,0,0.5);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .back-link {
+            color: #888;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .back-link:hover { color: #fff; }
+        .server-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #666;
+        }
+        .status-dot.running {
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+        }
+        .status-dot.offline { background: #666; }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            padding: 20px;
+            height: calc(100vh - 70px);
+        }
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .control-bar {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-start {
+            background: #00ff88;
+            color: #000;
+        }
+        .btn-stop {
+            background: #ff4444;
+            color: #fff;
+        }
+        .btn-restart {
+            background: #ffaa00;
+            color: #000;
+        }
+        .btn-kill {
+            background: rgba(255,0,0,0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+        /* Console */
+        .console-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0d0d0d;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .console-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .console-header h3 {
+            font-size: 14px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .console-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .console-line {
+            margin-bottom: 2px;
+        }
+        .console-line .time {
+            color: #666;
+            margin-right: 10px;
+        }
+        .console-line.stdout { color: #ccc; }
+        .console-line.stderr { color: #ff6b6b; }
+        .console-line.system { color: #00d4ff; }
+        .console-line.stdin { color: #00ff88; }
+        .console-line.error { color: #ff4444; }
+        .console-input {
+            display: flex;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .console-input input {
+            flex: 1;
+            padding: 15px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+        .console-input input:focus { outline: none; }
+        .console-input button {
+            padding: 15px 20px;
+            background: #00d4ff;
+            border: none;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .card h3 {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-row .label { color: #888; }
+        .stat-row .value { font-weight: 600; }
+        .stat-row .value.green { color: #00ff88; }
+        .stat-row .value.blue { color: #00d4ff; }
+        .stat-row .value.red { color: #ff4444; }
+        /* Progress bar */
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .files-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .file-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        .file-item i {
+            color: #888;
+        }
+        .file-item i.fa-folder { color: #ffaa00; }
+        .file-item i.fa-file-code { color: #00d4ff; }
+        @media (max-width: 1000px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                order: -1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <a href="/dashboard" class="back-link"><i class="fas fa-arrow-left"></i> Volver</a>
+            <span class="server-name" id="serverName">Cargando...</span>
+        </div>
+        <div class="status-indicator">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusText">-</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="main-panel">
+            <div class="control-bar">
+                <button class="btn btn-start" id="btnStart" onclick="startServer()">
+                    <i class="fas fa-play"></i> Iniciar
+                </button>
+                <button class="btn btn-stop" id="btnStop" onclick="stopServer()">
+                    <i class="fas fa-stop"></i> Detener
+                </button>
+                <button class="btn btn-restart" id="btnRestart" onclick="restartServer()">
+                    <i class="fas fa-redo"></i> Reiniciar
+                </button>
+                <button class="btn btn-kill" id="btnKill" onclick="killServer()">
+                    <i class="fas fa-skull"></i> Kill
+                </button>
+            </div>
+
+            <div class="console-wrapper">
+                <div class="console-header">
+                    <h3><i class="fas fa-terminal"></i> Consola</h3>
+                    <button class="btn" style="padding: 8px 15px; background: rgba(255,255,255,0.1); color: #888;" onclick="clearConsole()">
+                        <i class="fas fa-trash"></i> Limpiar
+                    </button>
+                </div>
+                <div class="console-body" id="consoleOutput">
+                    <div class="console-line system">
+                        <span class="time">[--:--:--]</span>
+                        Conectando a la consola...
+                    </div>
+                </div>
+                <div class="console-input">
+                    <input type="text" id="commandInput" placeholder="Escribe un comando..." onkeypress="handleCommand(event)">
+                    <button onclick="sendCommand()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card">
+                <h3><i class="fas fa-chart-line"></i> Recursos</h3>
+                <div class="stat-row">
+                    <span class="label">CPU</span>
+                    <span class="value blue" id="cpuUsage">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">RAM</span>
+                    <span class="value green" id="ramUsage">0 MB</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="fill" id="ramBar" style="width: 0%"></div>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Uptime</span>
+                    <span class="value" id="uptime">-</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-info-circle"></i> Información</h3>
+                <div class="stat-row">
+                    <span class="label">Plan</span>
+                    <span class="value" id="planName">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">RAM Límite</span>
+                    <span class="value" id="ramLimit">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Archivo</span>
+                    <span class="value" id="mainFile">-</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-folder"></i> Archivos</h3>
+                <div class="files-list" id="filesList">
+                    Cargando...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = '/login';
+
+        const params = new URLSearchParams(window.location.search);
+        const serverId = params.get('id');
+        if (!serverId) window.location.href = '/dashboard';
+
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+
+        let ws = null;
+        let serverStatus = 'offline';
+
+        // Conectar WebSocket
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${window.location.host}?serverId=${serverId}&token=${token}`);
+
+            ws.onopen = () => {
+                addConsoleLine('Conectado a la consola', 'system');
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'history') {
+                    data.data.forEach(line => addConsoleLine(line.text, line.type, line.time));
+                } else if (data.type === 'log') {
+                    addConsoleLine(data.data.text, data.data.type, data.data.time);
+                } else if (data.type === 'status') {
+                    updateStatus(data.data);
+                }
+            };
+
+            ws.onclose = () => {
+                addConsoleLine('Desconectado. Reconectando...', 'error');
+                setTimeout(connectWebSocket, 3000);
+            };
+
+            ws.onerror = () => {
+                addConsoleLine('Error de conexión', 'error');
+            };
+        }
+
+        // Añadir línea a la consola
+        function addConsoleLine(text, type = 'stdout', time = null) {
+            const console = document.getElementById('consoleOutput');
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            
+            const timestamp = time ? new Date(time).toLocaleTimeString() : new Date().toLocaleTimeString();
+            line.innerHTML = `<span class="time">[${timestamp}]</span> ${escapeHtml(text)}`;
+            
+            console.appendChild(line);
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function clearConsole() {
+            document.getElementById('consoleOutput').innerHTML = '';
+            addConsoleLine('Consola limpiada', 'system');
+        }
+
+        // Actualizar estado
+        function updateStatus(status) {
+            serverStatus = status;
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            
+            dot.className = `status-dot ${status}`;
+            text.textContent = status === 'running' ? 'Online' : 'Offline';
+            
+            updateButtons();
+        }
+
+        function updateButtons() {
+            const isRunning = serverStatus === 'running';
+            document.getElementById('btnStart').disabled = isRunning;
+            document.getElementById('btnStop').disabled = !isRunning;
+            document.getElementById('btnRestart').disabled = !isRunning;
+            document.getElementById('btnKill').disabled = !isRunning;
+        }
+
+        // Acciones del servidor
+        async function startServer() {
+            try {
+                const res = await fetch(`/api/server/${serverId}/start`, { method: 'POST', headers });
+                const data = await res.json();
+                if (!data.success) alert(data.error);
+            } catch (err) {
+                alert('Error al iniciar');
+            }
+            loadServerInfo();
+        }
+
+        async function stopServer() {
+            try {
+                const res = await fetch(`/api/server/${serverId}/stop`, { method: 'POST', headers });
+                const data = await res.json();
+                if (!data.success) alert(data.error);
+            } catch (err) {
+                alert('Error al detener');
+            }
+            loadServerInfo();
+        }
+
+        async function restartServer() {
+            try {
+                const res = await fetch(`/api/server/${serverId}/restart`, { method: 'POST', headers });
+                const data = await res.json();
+                if (!data.success) alert(data.error);
+            } catch (err) {
+                alert('Error al reiniciar');
+            }
+            loadServerInfo();
+        }
+
+        async function killServer() {
+            if (!confirm('¿Forzar cierre del proceso?')) return;
+            try {
+                await fetch(`/api/server/${serverId}/kill`, { method: 'POST', headers });
+            } catch (err) {}
+            loadServerInfo();
+        }
+
+        // Enviar comando
+        function handleCommand(e) {
+            if (e.key === 'Enter') sendCommand();
+        }
+
+        function sendCommand() {
+            const input = document.getElementById('commandInput');
+            const cmd = input.value.trim();
+            if (!cmd) return;
+            
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'command', command: cmd }));
+            }
+            input.value = '';
+        }
+
+        // Cargar info del servidor
+        async function loadServerInfo() {
+            try {
+                const res = await fetch(`/api/server/${serverId}`, { headers });
+                const data = await res.json();
+                
+                document.getElementById('serverName').textContent = data.name;
+                document.getElementById('mainFile').textContent = data.mainFile;
+                document.getElementById('planName').textContent = data.limits ? 'STARTER / PRO' : '-';
+                document.getElementById('ramLimit').textContent = data.limits ? `${data.limits.ram} MB` : '-';
+                
+                updateStatus(data.status);
+                
+                // Estadísticas
+                document.getElementById('cpuUsage').textContent = `${data.stats?.cpu || 0}%`;
+                document.getElementById('ramUsage').textContent = `${data.stats?.memory?.toFixed(1) || 0} MB`;
+                
+                const ramPercent = data.limits ? (data.stats?.memory || 0) / data.limits.ram * 100 : 0;
+                document.getElementById('ramBar').style.width = `${Math.min(ramPercent, 100)}%`;
+                
+                // Uptime
+                if (data.stats?.uptime > 0) {
+                    const mins = Math.floor(data.stats.uptime / 60000);
+                    const hours = Math.floor(mins / 60);
+                    document.getElementById('uptime').textContent = hours > 0 ? `${hours}h ${mins % 60}m` : `${mins}m`;
+                } else {
+                    document.getElementById('uptime').textContent = '-';
+                }
+                
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        // Cargar archivos
+        async function loadFiles(path = '') {
+            try {
+                const res = await fetch(`/api/server/${serverId}/files?path=${encodeURIComponent(path)}`, { headers });
+                const data = await res.json();
+                
+                const container = document.getElementById('filesList');
+                
+                let html = '';
+                if (path) {
+                    html += `<div class="file-item" onclick="loadFiles('${path.split('/').slice(0, -1).join('/')}')">
+                        <i class="fas fa-arrow-left"></i> ..
+                    </div>`;
+                }
+                
+                data.files.sort((a, b) => b.isDirectory - a.isDirectory).forEach(file => {
+                    const icon = file.isDirectory ? 'fa-folder' : 'fa-file-code';
+                    html += `<div class="file-item" onclick="${file.isDirectory ? `loadFiles('${file.path}')` : ''}">
+                        <i class="fas ${icon}"></i> ${file.name}
+                    </div>`;
+                });
+                
+                container.innerHTML = html || '<span style="color: #666">No hay archivos</span>';
+                
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        // Inicializar
+        connectWebSocket();
+        loadServerInfo();
+        loadFiles();
+        
+        // Actualizar stats cada 5 segundos
+        setInterval(loadServerInfo, 5000);
+    </script>
+</body>
+</html>

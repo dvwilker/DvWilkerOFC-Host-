@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - DvWilkerOFC HOST</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #b0b0b0;
+        }
+
+        .plans-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .plan-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .plan-card.featured {
+            border: 2px solid #00d4ff;
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.4);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-weight: bold;
+            font-size: 0.8em;
+            box-shadow: 0 3px 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .plan-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .plan-name {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .plan-price {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .plan-price .currency {
+            font-size: 0.6em;
+        }
+
+        .plan-period {
+            text-align: center;
+            color: #b0b0b0;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .features {
+            list-style: none;
+            margin: 30px 0;
+        }
+
+        .features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features li:last-child {
+            border-bottom: none;
+        }
+
+        .features .check {
+            color: #00d4ff;
+            font-size: 1.2em;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-free {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid #fff;
+        }
+
+        .btn-free:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.6);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .back-link a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #0099cc;
+        }
+
+        .payment-info {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .payment-info strong {
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛒 Tienda de Planes</h1>
+        <p>Elige el plan perfecto para tu proyecto</p>
+    </div>
+
+    <div class="plans-container">
+        <!-- PLAN FREE -->
+        <div class="plan-card">
+            <div class="plan-icon">🎁</div>
+            <div class="plan-name">FREE</div>
+            <div class="plan-price">
+                <span class="currency">$</span>0
+            </div>
+            <div class="plan-period">Gratis para siempre</div>
+            
+            <ul class="features">
+                <li><span class="check">✓</span> 1 Servidor</li>
+                <li><span class="check">✓</span> 800 MB Almacenamiento</li>
+                <li><span class="check">✓</span> 1 GB RAM</li>
+                <li><span class="check">✓</span> Consola en tiempo real</li>
+                <li><span class="check">✓</span> Clonación de GitHub</li>
+                <li><span class="check">✓</span> Gestor de archivos</li>
+            </ul>
+            
+            <a href="/dashboard" class="btn btn-free">Obtener Gratis</a>
+        </div>
+
+        <!-- PLAN PREMIUM 1 -->
+        <div class="plan-card featured">
+            <div class="popular-badge">⭐ POPULAR</div>
+            <div class="plan-icon">💎</div>
+            <div class="plan-name">PREMIUM</div>
+            <div class="plan-price">
+                <span class="currency">$</span>1
+            </div>
+            <div class="plan-period">Pago único (perpetuo)</div>
+            
+            <ul class="features">
+                <li><span class="check">✓</span> 1 Servidor Premium</li>
+                <li><span class="check">✓</span> 2 GB Almacenamiento</li>
+                <li><span class="check">✓</span> 2 GB RAM</li>
+                <li><span class="check">✓</span> Consola en tiempo real</li>
+                <li><span class="check">✓</span> Clonación de GitHub</li>
+                <li><span class="check">✓</span> Gestor de archivos</li>
+                <li><span class="check">✓</span> <strong>Soporte prioritario</strong></li>
+                <li><span class="check">✓</span> <strong>Sin renovación</strong></li>
+            </ul>
+
+            <div class="payment-info">
+                <strong>💳 Métodos de pago:</strong><br>
+                PayPal • Yape<br>
+                <strong>📱 Compra por WhatsApp</strong>
+            </div>
+            
+            <a href="https://wa.me/584125877491?text=Me%20interesa%20el%20plan%20PREMIUM%20($1%20USD)%20-%20Mi%20usuario:%20[tu_usuario]%20-%20Mi%20correo:%20[tu_correo]" 
+               class="btn btn-premium" 
+               target="_blank">
+                💬 Comprar por WhatsApp
+            </a>
+        </div>
+
+        <!-- PLAN PREMIUM 2 (futuro) -->
+        <div class="plan-card">
+            <div class="plan-icon">🚀</div>
+            <div class="plan-name">ULTRA</div>
+            <div class="plan-price">
+                <span class="currency">$</span>2
+            </div>
+            <div class="plan-period">Próximamente</div>
+            
+            <ul class="features">
+                <li><span class="check">✓</span> 2 Servidores</li>
+                <li><span class="check">✓</span> 4 GB Almacenamiento</li>
+                <li><span class="check">✓</span> 4 GB RAM</li>
+                <li><span class="check">✓</span> Todas las características Premium</li>
+                <li><span class="check">✓</span> <strong>Más recursos</strong></li>
+                <li><span class="check">✓</span> <strong>Múltiples servidores</strong></li>
+            </ul>
+            
+            <button class="btn btn-free" disabled style="opacity: 0.5; cursor: not-allowed;">
+                Próximamente
+            </button>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="/dashboard">← Volver al Dashboard</a>
+    </div>
+</body>
+</html>

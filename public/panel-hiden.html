@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel - DvWilkerOFC HOST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles/hiden.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-cloud"></i>
+                <span>DvWilkerOFC</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="/dashboard" class="nav-item">
+                <i class="fas fa-arrow-left"></i>
+                <span>Volver al Dashboard</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <div class="user-name" id="sidebarUsername">Usuario</div>
+                    <div class="user-plan" id="sidebarPlan">Free Plan</div>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="breadcrumb">
+                <i class="fas fa-server"></i>
+                <span id="serverNameBreadcrumb">Servidor</span>
+            </div>
+            <div class="header-actions">
+                <div class="server-status" id="serverStatus">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Cargando...</span>
+                </div>
+                <button class="btn btn-success" onclick="startServer()" id="startBtn">
+                    <i class="fas fa-play"></i> Start
+                </button>
+                <button class="btn btn-warning" onclick="restartServer()" id="restartBtn">
+                    <i class="fas fa-redo"></i> Restart
+                </button>
+                <button class="btn btn-danger" onclick="stopServer()" id="stopBtn">
+                    <i class="fas fa-stop"></i> Stop
+                </button>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="console">
+                <i class="fas fa-terminal"></i> Console
+            </button>
+            <button class="tab-btn" data-tab="files">
+                <i class="fas fa-folder"></i> Files
+            </button>
+            <button class="tab-btn" data-tab="startup">
+                <i class="fas fa-rocket"></i> Startup
+            </button>
+            <button class="tab-btn" data-tab="settings">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+            <button class="tab-btn" data-tab="network">
+                <i class="fas fa-network-wired"></i> Network
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Console Tab -->
+            <div class="tab-content active" id="console-tab">
+                <div class="console-container">
+                    <div class="console-header">
+                        <span><i class="fas fa-terminal"></i> Consola del Servidor</span>
+                        <button class="btn btn-sm" onclick="clearConsole()">
+                            <i class="fas fa-eraser"></i> Limpiar
+                        </button>
+                    </div>
+                    <div class="console-output" id="consoleOutput">
+                        <div class="console-line">Esperando logs del servidor...</div>
+                    </div>
+                    <div class="console-input">
+                        <i class="fas fa-chevron-right"></i>
+                        <input type="text" id="commandInput" placeholder="Escribe un comando y presiona Enter...">
+                        <button onclick="sendCommand()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Files Tab -->
+            <div class="tab-content" id="files-tab">
+                <div class="files-container">
+                    <div class="files-header">
+                        <div class="breadcrumb-path">
+                            <i class="fas fa-folder-open"></i>
+                            <span id="currentPath">/</span>
+                        </div>
+                        <div class="files-actions">
+                            <button class="btn btn-sm btn-primary" onclick="openUploadModal()">
+                                <i class="fas fa-upload"></i> Subir ZIP
+                            </button>
+                            <button class="btn btn-sm" onclick="refreshFiles()">
+                                <i class="fas fa-sync"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="files-list" id="filesList">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando archivos...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Startup Tab -->
+            <div class="tab-content" id="startup-tab">
+                <div class="startup-container">
+                    <div class="section">
+                        <h3><i class="fas fa-rocket"></i> Instalar desde GitHub</h3>
+                        <p class="text-muted">Clona un repositorio público o privado en tu servidor</p>
+                        
+                        <div class="form-group">
+                            <label>URL del Repositorio</label>
+                            <input type="url" id="startupRepoUrl" placeholder="https://github.com/usuario/repo">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Token de GitHub (opcional)</label>
+                            <input type="password" id="startupToken" placeholder="ghp_xxxxxxxxxxxx">
+                            <small>Solo necesario para repositorios privados</small>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="installRepo()">
+                            <i class="fas fa-download"></i> Instalar Repositorio
+                        </button>
+                    </div>
+                    
+                    <div class="section">
+                        <h3><i class="fas fa-code"></i> Archivo Principal</h3>
+                        <div class="form-group">
+                            <label>Archivo de inicio</label>
+                            <input type="text" id="mainFileInput" placeholder="index.js">
+                            <small>El archivo que se ejecutará cuando inicie el servidor</small>
+                        </div>
+                        <button class="btn btn-success" onclick="updateMainFile()">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-content" id="settings-tab">
+                <div class="settings-container">
+                    <div class="section">
+                        <h3><i class="fas fa-info-circle"></i> Información del Servidor</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">ID del Servidor</span>
+                                <span class="info-value" id="serverIdInfo">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Estado</span>
+                                <span class="info-value" id="serverStatusInfo">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Repositorio</span>
+                                <span class="info-value" id="serverRepoInfo">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Creado</span>
+                                <span class="info-value" id="serverCreatedInfo">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section danger-zone">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Zona de Peligro</h3>
+                        <p class="text-muted">Acciones irreversibles que afectarán tu servidor</p>
+                        
+                        <div class="danger-actions">
+                            <div class="danger-action">
+                                <div>
+                                    <strong>Reinstalar Servidor</strong>
+                                    <p>Elimina todos los archivos y deja el servidor limpio</p>
+                                </div>
+                                <button class="btn btn-danger" onclick="reinstallServer()">
+                                    <i class="fas fa-sync"></i> Reinstalar
+                                </button>
+                            </div>
+                            <div class="danger-action">
+                                <div>
+                                    <strong>Eliminar Servidor</strong>
+                                    <p>Elimina permanentemente este servidor y todos sus datos</p>
+                                </div>
+                                <button class="btn btn-danger" onclick="deleteServer()">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Tab -->
+            <div class="tab-content" id="network-tab">
+                <div class="network-container">
+                    <div class="section">
+                        <h3><i class="fas fa-network-wired"></i> Información de Red</h3>
+                        <div class="network-info">
+                            <div class="network-card">
+                                <i class="fas fa-plug"></i>
+                                <div>
+                                    <div class="network-label">Puerto Asignado</div>
+                                    <div class="network-value" id="networkPort">-</div>
+                                </div>
+                            </div>
+                            <div class="network-card">
+                                <i class="fas fa-globe"></i>
+                                <div>
+                                    <div class="network-label">URL Pública</div>
+                                    <div class="network-value" id="networkUrl">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Upload -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-backdrop" onclick="closeUploadModal()"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2><i class="fas fa-upload"></i> Subir Archivo ZIP</h2>
+                <button class="modal-close" onclick="closeUploadModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Arrastra un archivo ZIP aquí o haz clic para seleccionar</p>
+                    <input type="file" id="fileInput" accept=".zip" style="display: none;">
+                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                        Seleccionar Archivo
+                    </button>
+                </div>
+                <div id="uploadProgress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="uploadStatus">Subiendo...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/panel-hiden.js"></script>
+</body>
+</html>

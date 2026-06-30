@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Cuenta - DvWilkerOFC HOST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+        .container {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 50px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .icon.loading { color: #00d4ff; }
+        .icon.success { color: #00ff88; }
+        .icon.error { color: #ff4444; }
+        h2 {
+            margin-bottom: 15px;
+        }
+        p {
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            color: #000;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="content">
+            <div class="icon loading"><i class="fas fa-spinner fa-spin"></i></div>
+            <h2>Verificando...</h2>
+            <p>Por favor espera mientras verificamos tu cuenta</p>
+        </div>
+    </div>
+
+    <script>
+        const content = document.getElementById('content');
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+
+        async function verify() {
+            if (!token) {
+                content.innerHTML = `
+                    <div class="icon error"><i class="fas fa-times-circle"></i></div>
+                    <h2>Error</h2>
+                    <p>Token de verificación no válido</p>
+                    <a href="/register" class="btn">Registrarse</a>
+                `;
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/auth/verify?token=${token}`);
+                const data = await res.json();
+
+                if (data.success) {
+                    content.innerHTML = `
+                        <div class="icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>¡Cuenta Verificada!</h2>
+                        <p>Tu cuenta ha sido verificada correctamente. Ya puedes iniciar sesión.</p>
+                        <a href="/login" class="btn"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
+                    `;
+                } else {
+                    content.innerHTML = `
+                        <div class="icon error"><i class="fas fa-times-circle"></i></div>
+                        <h2>Error</h2>
+                        <p>${data.error}</p>
+                        <a href="/register" class="btn">Registrarse</a>
+                    `;
+                }
+            } catch (err) {
+                content.innerHTML = `
+                    <div class="icon error"><i class="fas fa-times-circle"></i></div>
+                    <h2>Error</h2>
+                    <p>Error de conexión. Intenta de nuevo.</p>
+                    <a href="/" class="btn">Volver</a>
+                `;
+            }
+        }
+
+        verify();
+    </script>
+</body>
+</html>

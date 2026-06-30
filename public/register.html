@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse - DvWilkerOFC HOST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 50px;
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(10px);
+        }
+        .logo {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #888;
+            font-weight: 400;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+            font-size: 14px;
+        }
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        select option {
+            background: #1a1a2e;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            color: #000;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,212,255,0.3);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .links {
+            text-align: center;
+            margin-top: 25px;
+        }
+        .links a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+        }
+        .message.error {
+            background: rgba(255,0,0,0.1);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+        .message.success {
+            background: rgba(0,255,0,0.1);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+        .plan-info {
+            background: rgba(0,212,255,0.1);
+            border: 1px solid rgba(0,212,255,0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #00d4ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🚀 DvWilkerOFC HOST</div>
+        <h2>Crear Cuenta</h2>
+        
+        <div id="message" class="message"></div>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Nombre de usuario</label>
+                <input type="text" id="username" required placeholder="tu_nombre">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Correo electrónico</label>
+                <input type="email" id="email" required placeholder="tu@email.com">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Contraseña</label>
+                <input type="password" id="password" required placeholder="Mínimo 6 caracteres" minlength="6">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-box"></i> Plan</label>
+                <select id="plan">
+                    <option value="starter">🌱 Starter - 500MB RAM</option>
+                    <option value="pro">🚀 Pro - 500MB RAM</option>
+                </select>
+                <div class="plan-info">
+                    <i class="fas fa-info-circle"></i> Ambos planes son GRATUITOS
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="fas fa-user-plus"></i> Crear Cuenta
+            </button>
+        </form>
+        
+        <div class="links">
+            <a href="/login">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const message = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+            
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        email: document.getElementById('email').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    message.className = 'message success';
+                    message.innerHTML = '<i class="fas fa-check-circle"></i> ' + data.message;
+                    message.style.display = 'block';
+                    form.reset();
+                } else {
+                    message.className = 'message error';
+                    message.textContent = data.error;
+                    message.style.display = 'block';
+                }
+            } catch (err) {
+                message.className = 'message error';
+                message.textContent = 'Error de conexión';
+                message.style.display = 'block';
+            }
+            
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Crear Cuenta';
+        });
+    </script>
+</body>
+</html>
